@@ -35,35 +35,116 @@ fb() {
 [[ -f firebase.json ]] || die "firebase.json was not found. Run this script from the SpaNaz repository."
 [[ -f firestore.rules ]] || die "firestore.rules was not found."
 
-if [[ -z "$PROJECT_ID" ]]; then
-  read -r -p "Firebase project ID (globally unique, e.g. spanaz-ro-prod): " PROJECT_ID
-fi
-
-[[ "$PROJECT_ID" =~ ^[a-z][a-z0-9-]{4,28}[a-z0-9]$ ]] || \
-  die "Invalid Firebase project ID: $PROJECT_ID"
-
 info "Checking Firebase authentication..."
 if ! fb projects:list --json >/dev/null 2>&1; then
-  info "Firebase login is required. A browser window may open."
+  info "Firebase login is required. Your browser will open."
   fb login
+else
+  ok "Firebase CLI is already authenticated."
 fi
 
 PROJECTS_JSON="$(fb projects:list --json)"
-PROJECT_EXISTS="$(printf '%s' "$PROJECTS_JSON" | node -e '
+
+project_exists() {
+  local wanted="$1"
+  printf '%s' "$PROJECTS_JSON" | node -e '
 const fs = require("fs");
-const id = process.argv[1];
+const wanted = process.argv[1];
 const data = JSON.parse(fs.readFileSync(0, "utf8"));
 const projects = Array.isArray(data.result) ? data.result : [];
-process.stdout.write(projects.some((p) => p.projectId === id) ? "yes" : "no");
-' "$PROJECT_ID")"
+process.stdout.write(projects.some((p) => p.projectId === wanted) ? "yes" : "no");
+' "$wanted"
+}
 
-if [[ "$PROJECT_EXISTS" == "yes" ]]; then
-  ok "Firebase project already exists: $PROJECT_ID"
+create_project() {
+  local requested_id="${1:-}"
+
+  if [[ -z "$requested_id" ]]; then
+    read -r -p "New Firebase project ID (globally unique, e.g. spanaz-ro-prod): " requested_id
+  fi
+
+  [[ "$requested_id" =~ ^[a-z][a-z0-9-]{4,28}[a-z0-9]$ ]] || \
+    die "Invalid Firebase project ID: $requested_id"
+
+  info "Creating Firebase project: $requested_id"
+  fb projects:create "$requested_id" --display-name "$DISPLAY_NAME"
+  PROJECT_ID="$requested_id"
+  ok "Firebase project created: $PROJECT_ID"
+}
+
+choose_project() {
+  local count
+  count="$(printf '%s' "$PROJECTS_JSON" | node -e '
+const fs = require("fs");
+const data = JSON.parse(fs.readFileSync(0, "utf8"));
+const projects = Array.isArray(data.result) ? data.result : [];
+process.stdout.write(String(projects.length));
+')"
+
+  if [[ "$count" -eq 0 ]]; then
+    warn "No Firebase projects are available for the signed-in account."
+    create_project
+    return
+  fi
+
+  printf '\nAvailable Firebase projects:\n\n'
+  printf '%s' "$PROJECTS_JSON" | node -e '
+const fs = require("fs");
+const data = JSON.parse(fs.readFileSync(0, "utf8"));
+const projects = Array.isArray(data.result) ? data.result : [];
+projects.forEach((project, index) => {
+  const displayName = project.displayName || "(no display name)";
+  console.log(`  ${index + 1}) ${displayName}  [${project.projectId}]`);
+});
+'
+  printf '\n  n) Create a new Firebase project\n\n'
+
+  local selection
+  while true; do
+    read -r -p "Choose a project [1-$count] or n: " selection
+
+    if [[ "$selection" =~ ^[Nn]$ ]]; then
+      create_project
+      return
+    fi
+
+    if [[ "$selection" =~ ^[0-9]+$ ]] && (( selection >= 1 && selection <= count )); then
+      PROJECT_ID="$(printf '%s' "$PROJECTS_JSON" | node -e '
+const fs = require("fs");
+const index = Number(process.argv[1]) - 1;
+const data = JSON.parse(fs.readFileSync(0, "utf8"));
+const projects = Array.isArray(data.result) ? data.result : [];
+process.stdout.write(projects[index]?.projectId || "");
+' "$selection")"
+      [[ -n "$PROJECT_ID" ]] || die "Could not read the selected Firebase project."
+      ok "Selected Firebase project: $PROJECT_ID"
+      return
+    fi
+
+    warn "Please enter a number from 1 to $count, or n to create a new project."
+  done
+}
+
+if [[ -z "$PROJECT_ID" ]]; then
+  choose_project
+elif [[ "$(project_exists "$PROJECT_ID")" == "yes" ]]; then
+  ok "Using Firebase project: $PROJECT_ID"
 else
-  info "Creating Firebase project: $PROJECT_ID"
-  fb projects:create "$PROJECT_ID" --display-name "$DISPLAY_NAME"
-  ok "Firebase project created."
+  warn "Firebase project '$PROJECT_ID' is not available for the signed-in account."
+  if [[ "$ASSUME_YES" == "1" ]]; then
+    create_project "$PROJECT_ID"
+  else
+    read -r -p "Create Firebase project '$PROJECT_ID'? [y/N] " create_answer
+    if [[ "$create_answer" =~ ^[Yy]$ ]]; then
+      create_project "$PROJECT_ID"
+    else
+      PROJECT_ID=""
+      choose_project
+    fi
+  fi
 fi
+
+info "Using project $PROJECT_ID for the remaining setup."
 
 if fb firestore:databases:get "(default)" --project "$PROJECT_ID" >/dev/null 2>&1; then
   ok "Default Firestore database already exists."
