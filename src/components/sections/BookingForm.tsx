@@ -38,7 +38,7 @@ type SubmittedSummary = {
 type AvailabilityState = "idle" | "checking" | "available" | "unavailable" | "unknown";
 
 const inputClass =
-  "w-full rounded-xl border border-input bg-card px-4 py-3 text-base text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-2 focus:ring-ring/40";
+  "min-h-14 w-full rounded-[1rem] border border-input/90 bg-background/80 px-4 py-3.5 text-[0.95rem] text-foreground shadow-[0_1px_0_rgba(255,255,255,0.65)_inset] outline-none transition duration-200 hover:border-primary/25 focus:border-gold/70 focus:bg-card focus:ring-4 focus:ring-gold/10 placeholder:text-muted-foreground/65";
 
 function Field({
   id,
@@ -55,12 +55,15 @@ function Field({
 }) {
   return (
     <div>
-      <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-foreground">
+      <label
+        htmlFor={id}
+        className="mb-2 block text-[0.72rem] font-bold uppercase tracking-[0.09em] text-foreground/75"
+      >
         {label}
       </label>
       {children}
-      {hint && !error && <p className="mt-1.5 text-xs text-muted-foreground">{hint}</p>}
-      {error && <p className="mt-1.5 text-xs text-destructive">{error}</p>}
+      {hint && !error && <p className="mt-2 text-[0.72rem] leading-5 text-muted-foreground">{hint}</p>}
+      {error && <p className="mt-2 text-[0.72rem] font-medium text-destructive">{error}</p>}
     </div>
   );
 }
@@ -359,15 +362,19 @@ export function BookingForm() {
             : labels.availabilityIdle;
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="surface-card relative mx-auto max-w-3xl p-5 sm:p-8">
+    <form
+      onSubmit={handleSubmit}
+      noValidate
+      className="relative mx-auto w-full overflow-hidden rounded-[2.25rem] border border-border/80 bg-card/95 p-5 shadow-lift sm:p-8 lg:p-9"
+    >
       <div className="pointer-events-none absolute -left-[10000px] top-auto h-px w-px overflow-hidden" aria-hidden="true">
         <label htmlFor="website">Website</label>
         <input id="website" name="website" tabIndex={-1} autoComplete="off" />
       </div>
-      <div className="mb-6 rounded-2xl border border-primary/15 bg-primary/[0.04] p-4">
+      <div className="mb-7 rounded-[1.25rem] border border-gold/20 bg-gold-soft/35 p-4 sm:p-5">
         <div className="flex gap-3">
-          <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-          <p className="text-sm leading-relaxed text-muted-foreground">
+          <ShieldCheck className="mt-0.5 h-4.5 w-4.5 shrink-0 text-clay" />
+          <p className="text-[0.82rem] leading-6 text-muted-foreground">
             {lang === "ro"
               ? "Cerem doar datele necesare pentru programare. Nu folosim datele de rezervare pentru marketing fără o opțiune separată."
               : "We ask only for information needed to manage your appointment. Booking data is not used for marketing without a separate opt-in."}
@@ -375,7 +382,7 @@ export function BookingForm() {
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-x-5 gap-y-5 sm:grid-cols-2">
         <Field id="name" label={t.booking.fields.name} error={errors.name}>
           <input id="name" name="name" autoComplete="name" className={inputClass} />
         </Field>
@@ -492,7 +499,7 @@ export function BookingForm() {
         <div className="sm:col-span-2">
           <div
             className={
-              "flex items-start gap-2 rounded-xl border p-3 text-sm " +
+              "flex min-h-12 items-start gap-2.5 rounded-[1rem] border px-4 py-3 text-[0.8rem] leading-5 " +
               (availability === "available"
                 ? "border-emerald-300 bg-emerald-50 text-emerald-800"
                 : availability === "unavailable"
@@ -535,13 +542,13 @@ export function BookingForm() {
         </div>
       </div>
 
-      <div className="mt-6 space-y-3 rounded-2xl border border-border bg-background p-4">
+      <div className="mt-7 space-y-4 rounded-[1.25rem] border border-border/70 bg-background/60 p-4 sm:p-5">
         <label htmlFor="privacy" className="flex items-start gap-3 text-sm text-muted-foreground">
           <input
             id="privacy"
             name="privacy"
             type="checkbox"
-            className="mt-0.5 h-5 w-5 shrink-0 rounded border-input accent-[var(--primary)]"
+            className="mt-0.5 h-4.5 w-4.5 shrink-0 rounded border-input accent-[var(--primary)]"
           />
           <span>
             {labels.privacy}{" "}
@@ -557,7 +564,7 @@ export function BookingForm() {
             id="terms"
             name="terms"
             type="checkbox"
-            className="mt-0.5 h-5 w-5 shrink-0 rounded border-input accent-[var(--primary)]"
+            className="mt-0.5 h-4.5 w-4.5 shrink-0 rounded border-input accent-[var(--primary)]"
           />
           <span>
             {labels.terms}{" "}
@@ -586,7 +593,7 @@ export function BookingForm() {
       <button
         type="submit"
         disabled={submitting || availability === "unavailable" || availability === "checking"}
-        className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-4 text-sm font-medium text-primary-foreground shadow-soft transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+        className="mt-7 inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-4 text-[0.78rem] font-bold uppercase tracking-[0.07em] text-primary-foreground shadow-soft transition duration-300 hover:-translate-y-0.5 hover:shadow-lift disabled:cursor-not-allowed disabled:opacity-60"
       >
         {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
         {t.booking.submit}
@@ -600,7 +607,7 @@ export function BookingForm() {
         href={whatsappLink(lang)}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-whatsapp px-6 py-4 text-sm font-medium text-whatsapp-foreground"
+        className="mt-4 flex min-h-14 w-full items-center justify-center gap-2 rounded-full border border-whatsapp/25 bg-background px-6 py-4 text-[0.78rem] font-bold uppercase tracking-[0.06em] text-whatsapp transition hover:bg-whatsapp/5"
       >
         <MessageCircle className="h-4 w-4" />
         {t.booking.whatsappCta}

@@ -7,51 +7,76 @@ export function HomeSpaExperience() {
     lang === "ro"
       ? {
           eyebrow: "CE ÎNSEAMNĂ HOME SPA",
-          title: "Aducem spa-ul la tine.",
+          title: "Spa-ul vine la tine. Tu rămâi în ritmul tău.",
           body:
-            "Nu trebuie să te deplasezi, să stai în trafic sau să te pregătești pentru o vizită la salon. SPA NAZ vine la ușa ta cu tot ce este necesar pentru experiență, astfel încât relaxarea să înceapă și să se termine în confortul casei tale.",
+            "Fără trafic, fără recepție, fără graba de după masaj. SPA NAZ pregătește experiența în spațiul în care te simți deja cel mai confortabil.",
           items: [
-            { title: "Fără drumuri", desc: "Timpul tău rămâne pentru tine, nu pentru trafic." },
-            { title: "Spațiul tău", desc: "O experiență privată, calmă și personală în propria locuință." },
-            { title: "Noi aducem experiența", desc: "SPA NAZ pregătește cadrul necesar pentru programarea ta." },
+            {
+              title: "Fără drumuri",
+              desc: "Programarea începe acasă, nu în trafic.",
+            },
+            {
+              title: "Spațiul tău",
+              desc: "Intimitate, confort și ritmul pe care îl alegi tu.",
+            },
+            {
+              title: "Experiență pregătită",
+              desc: "Venim cu ceea ce este necesar pentru sesiunea aleasă.",
+            },
           ],
         }
       : {
           eyebrow: "WHAT HOME SPA MEANS",
-          title: "We bring the spa to you.",
+          title: "The spa comes to you. You stay in your own rhythm.",
           body:
-            "You do not need to travel, sit in traffic or prepare for a salon visit. SPA NAZ arrives at your door with everything needed for the experience, so your relaxation can begin and end in the comfort of your own home.",
+            "No traffic, no reception desk, no rush after the massage. SPA NAZ prepares the experience in the place where you already feel most comfortable.",
           items: [
-            { title: "No travel", desc: "Your time stays yours instead of being spent in traffic." },
-            { title: "Your space", desc: "A private, calm and personal experience in your own home." },
-            { title: "We bring the experience", desc: "SPA NAZ prepares what is needed for your appointment." },
+            {
+              title: "No travel",
+              desc: "Your appointment starts at home, not in traffic.",
+            },
+            {
+              title: "Your space",
+              desc: "Privacy, comfort and a pace that is entirely yours.",
+            },
+            {
+              title: "Prepared experience",
+              desc: "We arrive with what is needed for your selected session.",
+            },
           ],
         };
 
   const icons = [Car, Home, Sparkles];
 
   return (
-    <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-24">
-      <div className="grid gap-10 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-16">
-        <div>
+    <section className="bg-background py-20 lg:py-28">
+      <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-start lg:gap-20">
+        <div className="lg:sticky lg:top-28">
           <p className="eyebrow">{copy.eyebrow}</p>
-          <h2 className="mt-3 text-3xl sm:text-4xl">{copy.title}</h2>
-          <div className="gold-rule mt-5 bg-gold" />
-          <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">{copy.body}</p>
+          <h2 className="mt-4 max-w-[12ch] text-4xl leading-[1.05] sm:text-5xl">
+            {copy.title}
+          </h2>
+          <div className="gold-rule mt-7" />
+          <p className="mt-7 max-w-lg text-base leading-8 text-muted-foreground">
+            {copy.body}
+          </p>
         </div>
 
-        <div className="grid gap-4">
+        <div className="divide-y divide-border/70 border-y border-border/70">
           {copy.items.map((item, index) => {
             const Icon = icons[index] ?? Sparkles;
             return (
-              <div key={item.title} className="surface-card flex gap-4 p-5">
-                <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gold-soft text-clay">
-                  <Icon className="h-5 w-5" />
+              <div
+                key={item.title}
+                className="group grid grid-cols-[auto_1fr] gap-5 py-7 sm:grid-cols-[auto_0.7fr_1fr] sm:items-center sm:gap-8"
+              >
+                <span className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-gold/25 bg-gold-soft/45 text-clay">
+                  <Icon className="h-4.5 w-4.5" />
                 </span>
-                <div>
-                  <h3 className="text-xl">{item.title}</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{item.desc}</p>
-                </div>
+                <h3 className="text-2xl sm:text-3xl">{item.title}</h3>
+                <p className="col-start-2 text-sm leading-6 text-muted-foreground sm:col-start-auto">
+                  {item.desc}
+                </p>
               </div>
             );
           })}
