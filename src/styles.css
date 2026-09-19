@@ -45,12 +45,12 @@
   --color-whatsapp-foreground: var(--whatsapp-foreground);
   --font-display: "Cormorant Garamond", Georgia, serif;
   --font-sans: "Karla", ui-sans-serif, system-ui, sans-serif;
-  --shadow-soft: 0 18px 50px -28px oklch(0.35 0.04 60 / 0.35);
-  --shadow-lift: 0 26px 70px -32px oklch(0.35 0.05 60 / 0.45);
+  --shadow-soft: 0 18px 55px -34px oklch(0.28 0.035 60 / 0.28);
+  --shadow-lift: 0 32px 90px -42px oklch(0.26 0.045 60 / 0.38);
 }
 
 :root {
-  --radius: 1rem;
+  --radius: 1.15rem;
   --background: oklch(0.985 0.008 85);
   --foreground: oklch(0.26 0.018 60);
   --card: oklch(0.997 0.004 90);
@@ -119,6 +119,17 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--color-gold-soft);
+    color: var(--color-foreground);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 3px;
   }
 
   h1,
@@ -140,8 +151,8 @@
 }
 
 @utility surface-card {
-  background-color: var(--color-card);
-  border: 1px solid var(--color-border);
+  background-color: color-mix(in oklch, var(--color-card) 96%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-border) 82%, transparent);
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-soft);
 }

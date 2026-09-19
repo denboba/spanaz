@@ -161,6 +161,6 @@ export const MEMBERSHIPS = [
   { sessions: 10, minutes: 120, priceLei: 3000 },
 ] as const;
 
-export const SERVICE_AREAS = ["Sector 1", "Sector 4", "Sector 5", "Sector 6"] as const;
+export const SERVICE_AREAS = ["Sector 1", "Sector 4", "Sector 6"] as const;
 
 export const TESTIMONIALS: { stars: number; quote: string; author: string }[] = [];

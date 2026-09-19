@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { CalendarCheck, Clock3, ShieldCheck } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { StickyCta } from "@/components/site/StickyCta";
@@ -37,7 +38,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "SPA NAZ oferă masaj profesional la domiciliu în Sectoarele 1, 4, 5 și 6 din București. Relaxare, deep tissue, drenaj limfatic și aromaterapie.",
+          "SPA NAZ oferă masaj profesional la domiciliu în Sectoarele 1, 4 și 6 din București. Relaxare, deep tissue, drenaj limfatic și aromaterapie.",
       },
       { property: "og:title", content: "SPA NAZ | Masaj la Domiciliu în București" },
       {
@@ -56,16 +57,64 @@ export const Route = createFileRoute("/")({
 });
 
 function BookingSection() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
+  const copy =
+    lang === "ro"
+      ? {
+          eyebrow: "PROGRAMARE PRIVATĂ",
+          note: "Cererea este verificată înainte de confirmare.",
+          availability: "Disponibilitate verificată înainte de confirmare",
+          privacy: "Date folosite numai pentru gestionarea programării",
+          response: "Confirmare directă de la SPA NAZ",
+        }
+      : {
+          eyebrow: "PRIVATE APPOINTMENT",
+          note: "Every request is checked before it is confirmed.",
+          availability: "Availability checked before confirmation",
+          privacy: "Data used only to manage your appointment",
+          response: "Direct confirmation from SPA NAZ",
+        };
+
+  const assurances = [
+    { Icon: CalendarCheck, text: copy.availability },
+    { Icon: ShieldCheck, text: copy.privacy },
+    { Icon: Clock3, text: copy.response },
+  ];
+
   return (
-    <section id="rezervare" className="scroll-mt-24 bg-sand py-16 lg:py-24">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl sm:text-4xl">{t.booking.title}</h2>
-          <div className="gold-rule mx-auto mt-5 w-20 bg-gold" />
-          <p className="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base">{t.booking.subtitle}</p>
+    <section
+      id="rezervare"
+      className="relative scroll-mt-24 overflow-hidden border-y border-border/60 bg-sand/60 py-20 lg:py-28"
+    >
+      <div className="pointer-events-none absolute right-0 top-0 h-80 w-80 rounded-full bg-gold-soft/70 blur-3xl" />
+      <div className="relative mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.38fr_0.62fr] lg:gap-14">
+        <div className="lg:sticky lg:top-28 lg:self-start">
+          <p className="eyebrow">{copy.eyebrow}</p>
+          <h2 className="mt-4 max-w-[12ch] text-4xl leading-tight sm:text-5xl">
+            {t.booking.title}
+          </h2>
+          <div className="gold-rule mt-6" />
+          <p className="mt-6 max-w-md text-sm leading-7 text-muted-foreground sm:text-base">
+            {t.booking.subtitle}
+          </p>
+
+          <div className="mt-8 space-y-4 border-t border-border/70 pt-6">
+            {assurances.map(({ Icon, text }) => (
+              <div key={text} className="flex items-start gap-3">
+                <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-card text-primary shadow-soft">
+                  <Icon className="h-4 w-4" />
+                </span>
+                <p className="pt-2 text-sm leading-5 text-foreground/80">{text}</p>
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-7 text-xs uppercase tracking-[0.14em] text-muted-foreground">
+            {copy.note}
+          </p>
         </div>
-        <div className="mt-10">
+
+        <div>
           <BookingForm />
         </div>
       </div>

@@ -1,3 +1,5 @@
+import { getFirebasePublicConfig } from "@/lib/runtime-config";
+
 type FirestoreValue = {
   stringValue?: string;
   integerValue?: string;
@@ -14,15 +16,6 @@ export type BookedSlot = {
   durationMinutes: number;
 };
 
-function firebaseConfig() {
-  const projectId = import.meta.env["VITE_FIREBASE_PROJECT_ID"]?.trim();
-  const apiKey = import.meta.env["VITE_FIREBASE_API_KEY"]?.trim();
-  if (!projectId || !apiKey) {
-    throw new Error("Firebase availability is not configured.");
-  }
-  return { projectId, apiKey };
-}
-
 function minutes(time: string) {
   const parts = time.split(":");
   if (parts.length !== 2) return null;
@@ -34,7 +27,7 @@ function minutes(time: string) {
 
 export async function getBookedSlots(date: string): Promise<BookedSlot[]> {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return [];
-  const { projectId, apiKey } = firebaseConfig();
+  const { projectId, apiKey } = await getFirebasePublicConfig();
 
   const endpoint =
     "https://firestore.googleapis.com/v1/projects/" +
