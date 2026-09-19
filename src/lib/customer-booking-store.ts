@@ -1,4 +1,5 @@
 import { getCurrentCustomerSession } from "@/lib/customer-auth";
+import { getFirebasePublicConfig } from "@/lib/runtime-config";
 
 export type CustomerBookingStatus = "pending" | "confirmed" | "completed" | "cancelled";
 
@@ -29,13 +30,6 @@ type FirestoreDocument = {
   name?: string;
   fields?: Record<string, FirestoreValue>;
 };
-
-function projectConfig() {
-  const projectId = import.meta.env["VITE_FIREBASE_PROJECT_ID"]?.trim();
-  const apiKey = import.meta.env["VITE_FIREBASE_API_KEY"]?.trim();
-  if (!projectId || !apiKey) throw new Error("Firebase booking storage is not configured.");
-  return { projectId, apiKey };
-}
 
 function stringField(fields: Record<string, FirestoreValue>, key: string) {
   return fields[key]?.stringValue ?? "";
@@ -87,7 +81,7 @@ export async function listCustomerBookings(): Promise<CustomerBooking[]> {
   const session = await getCurrentCustomerSession();
   if (!session) throw new Error("Sign in to view your bookings.");
 
-  const { projectId, apiKey } = projectConfig();
+  const { projectId, apiKey } = await getFirebasePublicConfig();
   const endpoint =
     "https://firestore.googleapis.com/v1/projects/" +
     encodeURIComponent(projectId) +
@@ -128,7 +122,7 @@ export async function cancelCustomerBooking(booking: CustomerBooking): Promise<v
   const session = await getCurrentCustomerSession();
   if (!session) throw new Error("Sign in to manage this booking.");
 
-  const { projectId, apiKey } = projectConfig();
+  const { projectId, apiKey } = await getFirebasePublicConfig();
   const now = new Date().toISOString();
 
   const writes: Array<Record<string, unknown>> = [
