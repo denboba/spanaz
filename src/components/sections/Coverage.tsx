@@ -8,14 +8,14 @@ export function Coverage() {
     lang === "ro"
       ? {
           title: "Masaj la domiciliu în București",
-          body: "SPA NAZ oferă programări la domiciliu în Sectoarele 1, 4, 5 și 6. Introdu adresa completă la rezervare, iar noi confirmăm disponibilitatea pentru data și ora alese.",
+          body: "SPA NAZ oferă programări la domiciliu în Sectoarele 1, 4 și 6. Introdu adresa completă la rezervare, iar noi confirmăm disponibilitatea pentru data și ora alese.",
           label: "Zone deservite",
           note: "Programările sunt confirmate în funcție de disponibilitate și timpul de deplasare.",
           mapAlt: "Hartă a Bucureștiului pentru zonele deservite de SPA NAZ",
         }
       : {
           title: "Home massage in Bucharest",
-          body: "SPA NAZ provides home massage appointments in Sectors 1, 4, 5 and 6. Enter your full address when booking and we will confirm availability for your selected date and time.",
+          body: "SPA NAZ provides home massage appointments in Sectors 1, 4 and 6. Enter your full address when booking and we will confirm availability for your selected date and time.",
           label: "Service areas",
           note: "Appointments are confirmed based on availability and travel time.",
           mapAlt: "Map of Bucharest showing the SPA NAZ service area",
