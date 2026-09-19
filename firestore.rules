@@ -122,7 +122,7 @@ service cloud.firestore {
         request.resource.data.appointmentDate.size() == 10 &&
         request.resource.data.appointmentTime is string &&
         request.resource.data.appointmentTime.size() == 5 &&
-        request.resource.data.sector in ['Sector 1', 'Sector 4', 'Sector 5', 'Sector 6'] &&
+        request.resource.data.sector in ['Sector 1', 'Sector 4', 'Sector 6'] &&
         request.resource.data.address is string &&
         request.resource.data.address.size() >= 4 &&
         request.resource.data.address.size() <= 300 &&
