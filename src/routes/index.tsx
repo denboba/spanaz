@@ -37,7 +37,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "SPA NAZ oferă masaj profesional la domiciliu în Sectoarele 1, 4, 5 și 6 din București. Relaxare, deep tissue, drenaj limfatic și aromaterapie.",
+          "SPA NAZ oferă masaj profesional la domiciliu în Sectoarele 1, 4 și 6 din București. Relaxare, deep tissue, drenaj limfatic și aromaterapie.",
       },
       { property: "og:title", content: "SPA NAZ | Masaj la Domiciliu în București" },
       {
