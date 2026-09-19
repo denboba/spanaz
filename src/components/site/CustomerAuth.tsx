@@ -172,10 +172,10 @@ export function CustomerAuth() {
   if (user) {
     const initial = (user.email?.[0] ?? "S").toUpperCase();
     return (
-      <section id="account" className="scroll-mt-24 bg-background py-14 lg:py-20">
+      <section id="account" className="scroll-mt-24 bg-background py-20 lg:py-28">
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
-          <div className="surface-card overflow-hidden">
-            <div className="border-b border-border bg-sand/70 p-6 sm:p-8">
+          <div className="overflow-hidden rounded-[2.25rem] border border-border/80 bg-card shadow-lift">
+            <div className="border-b border-border/70 bg-sand/55 p-6 sm:p-8">
               <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-4">
                   <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary font-display text-2xl text-primary-foreground">
@@ -190,7 +190,7 @@ export function CustomerAuth() {
                 <button
                   type="button"
                   onClick={() => void logoutCustomer()}
-                  className="inline-flex items-center justify-center rounded-full border border-border bg-background px-5 py-3 text-sm font-medium"
+                  className="inline-flex items-center justify-center rounded-full border border-border/80 bg-background px-5 py-3 text-[0.76rem] font-bold uppercase tracking-[0.06em] text-foreground transition hover:border-primary/30"
                 >
                   {copy.signout}
                 </button>
@@ -242,7 +242,7 @@ export function CustomerAuth() {
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <Link
                   to="/account"
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-primary px-5 py-3.5 text-sm font-medium text-primary-foreground"
+                  className="inline-flex min-h-13 flex-1 items-center justify-center gap-2 rounded-full bg-primary px-5 py-3.5 text-[0.76rem] font-bold uppercase tracking-[0.06em] text-primary-foreground shadow-soft transition hover:-translate-y-0.5"
                 >
                   <UserRound className="h-4 w-4" />
                   {copy.bookings}
@@ -250,7 +250,7 @@ export function CustomerAuth() {
                 {hasAdminPermission(user) && (
                   <Link
                     to="/admin/bookings"
-                    className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-primary px-5 py-3.5 text-sm font-medium text-primary"
+                    className="inline-flex min-h-13 flex-1 items-center justify-center gap-2 rounded-full border border-primary/25 px-5 py-3.5 text-[0.76rem] font-bold uppercase tracking-[0.06em] text-primary transition hover:border-primary/50"
                   >
                     <ShieldCheck className="h-4 w-4" />
                     {copy.admin}
@@ -265,19 +265,19 @@ export function CustomerAuth() {
   }
 
   return (
-    <section id="account" className="scroll-mt-24 bg-background py-16 lg:py-24">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="overflow-hidden rounded-[2rem] border border-border bg-card shadow-soft">
-          <div className="grid lg:grid-cols-[0.9fr_1.1fr]">
-            <div className="relative overflow-hidden bg-sand p-7 sm:p-10 lg:p-12">
+    <section id="account" className="scroll-mt-24 bg-background py-20 lg:py-28">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <div className="overflow-hidden rounded-[2.5rem] border border-border/80 bg-card shadow-lift">
+          <div className="grid lg:grid-cols-[0.92fr_1.08fr]">
+            <div className="relative overflow-hidden bg-sand/70 p-7 sm:p-10 lg:p-14">
               <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-gold/10 blur-2xl" />
               <div className="relative">
                 <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-gold-soft text-clay">
                   <Sparkles className="h-5 w-5" />
                 </span>
                 <p className="eyebrow mt-6">{copy.eyebrow}</p>
-                <h2 className="mt-3 max-w-md text-4xl leading-tight">{copy.title}</h2>
-                <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
+                <h2 className="mt-4 max-w-md text-4xl leading-[1.05] sm:text-5xl">{copy.title}</h2>
+                <p className="mt-5 max-w-md text-sm leading-7 text-muted-foreground">
                   {copy.subtitle}
                 </p>
 
@@ -294,9 +294,9 @@ export function CustomerAuth() {
               </div>
             </div>
 
-            <div className="p-5 sm:p-8 lg:p-12">
+            <div className="p-5 sm:p-8 lg:p-14">
               <div className="mx-auto max-w-md">
-                <div className="grid grid-cols-2 rounded-full bg-muted p-1">
+                <div className="grid grid-cols-2 rounded-full border border-border/70 bg-muted/70 p-1">
                   {(["login", "register"] as const).map((nextMode) => (
                     <button
                       key={nextMode}
@@ -307,7 +307,7 @@ export function CustomerAuth() {
                         setNotice("");
                       }}
                       className={
-                        "rounded-full px-4 py-2.5 text-sm font-medium transition " +
+                        "rounded-full px-4 py-2.5 text-[0.74rem] font-bold uppercase tracking-[0.06em] transition " +
                         (mode === nextMode
                           ? "bg-background text-foreground shadow-sm"
                           : "text-muted-foreground")
@@ -326,7 +326,7 @@ export function CustomerAuth() {
                   }}
                 >
                   <div>
-                    <label htmlFor="account-email" className="mb-1.5 block text-sm font-medium">
+                    <label htmlFor="account-email" className="mb-2 block text-[0.7rem] font-bold uppercase tracking-[0.09em] text-foreground/75">
                       {copy.email}
                     </label>
                     <div className="relative">
@@ -338,13 +338,13 @@ export function CustomerAuth() {
                         autoComplete="email"
                         value={email}
                         onChange={(event) => setEmail(event.target.value)}
-                        className="w-full rounded-xl border border-input bg-background py-3.5 pl-11 pr-4 text-base outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+                        className="min-h-14 w-full rounded-[1rem] border border-input/90 bg-background/80 py-3.5 pl-11 pr-4 text-[0.95rem] outline-none transition hover:border-primary/25 focus:border-gold/70 focus:bg-card focus:ring-4 focus:ring-gold/10"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label htmlFor="account-password" className="mb-1.5 block text-sm font-medium">
+                    <label htmlFor="account-password" className="mb-2 block text-[0.7rem] font-bold uppercase tracking-[0.09em] text-foreground/75">
                       {copy.password}
                     </label>
                     <div className="relative">
@@ -357,7 +357,7 @@ export function CustomerAuth() {
                         autoComplete={mode === "login" ? "current-password" : "new-password"}
                         value={password}
                         onChange={(event) => setPassword(event.target.value)}
-                        className="w-full rounded-xl border border-input bg-background py-3.5 pl-11 pr-12 text-base outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+                        className="min-h-14 w-full rounded-[1rem] border border-input/90 bg-background/80 py-3.5 pl-11 pr-12 text-[0.95rem] outline-none transition hover:border-primary/25 focus:border-gold/70 focus:bg-card focus:ring-4 focus:ring-gold/10"
                       />
                       <button
                         type="button"
@@ -384,7 +384,7 @@ export function CustomerAuth() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-3.5 text-sm font-medium text-primary-foreground disabled:opacity-50"
+                    className="inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-3.5 text-[0.76rem] font-bold uppercase tracking-[0.07em] text-primary-foreground shadow-soft transition hover:-translate-y-0.5 disabled:opacity-50"
                   >
                     {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
                     {submitting ? copy.wait : mode === "login" ? copy.login : copy.register}
@@ -411,7 +411,7 @@ export function CustomerAuth() {
                   type="button"
                   onClick={() => void googleSignIn()}
                   disabled={submitting}
-                  className="inline-flex w-full items-center justify-center gap-3 rounded-full border border-border bg-background px-5 py-3.5 text-sm font-medium transition hover:bg-muted disabled:opacity-50"
+                  className="inline-flex min-h-14 w-full items-center justify-center gap-3 rounded-full border border-border/80 bg-background px-5 py-3.5 text-[0.76rem] font-bold uppercase tracking-[0.06em] transition hover:border-primary/30 hover:bg-muted/50 disabled:opacity-50"
                 >
                   <span className="font-semibold">G</span>
                   {copy.google}
