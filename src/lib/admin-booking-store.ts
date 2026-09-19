@@ -1,4 +1,5 @@
 import type { AdminSession } from "@/lib/admin-auth";
+import { getFirebasePublicConfig } from "@/lib/runtime-config";
 
 export type BookingStatus = "pending" | "confirmed" | "completed" | "cancelled";
 
@@ -48,18 +49,6 @@ type FirestoreDocument = {
   name?: string;
   fields?: Record<string, FirestoreValue>;
 };
-
-function getProjectId() {
-  const projectId = import.meta.env["VITE_FIREBASE_PROJECT_ID"]?.trim();
-  if (!projectId) throw new Error("Firebase project is not configured.");
-  return projectId;
-}
-
-function getApiKey() {
-  const apiKey = import.meta.env["VITE_FIREBASE_API_KEY"]?.trim();
-  if (!apiKey) throw new Error("Firebase API key is not configured.");
-  return apiKey;
-}
 
 function stringField(fields: Record<string, FirestoreValue>, key: string) {
   return fields[key]?.stringValue ?? "";
@@ -118,12 +107,21 @@ async function readError(response: Response) {
   }
 }
 
+const stringValue = (value: string) => ({ stringValue: value });
+const integerValue = (value: number) => ({ integerValue: String(value) });
+const timestampValue = (value: string) => ({ timestampValue: value });
+
+function documentName(projectId: string, path: string) {
+  return "projects/" + projectId + "/databases/(default)/documents/" + path;
+}
+
 export async function listAdminBookings(session: AdminSession): Promise<AdminBooking[]> {
+  const { projectId, apiKey } = await getFirebasePublicConfig();
   const endpoint =
     "https://firestore.googleapis.com/v1/projects/" +
-    encodeURIComponent(getProjectId()) +
+    encodeURIComponent(projectId) +
     "/databases/(default)/documents:runQuery?key=" +
-    encodeURIComponent(getApiKey());
+    encodeURIComponent(apiKey);
 
   const response = await fetch(endpoint, {
     method: "POST",
@@ -148,25 +146,12 @@ export async function listAdminBookings(session: AdminSession): Promise<AdminBoo
     .map((row) => parseBooking(row.document as FirestoreDocument));
 }
 
-const stringValue = (value: string) => ({ stringValue: value });
-const integerValue = (value: number) => ({ integerValue: String(value) });
-const timestampValue = (value: string) => ({ timestampValue: value });
-
-function documentName(projectId: string, path: string) {
-  return (
-    "projects/" +
-    projectId +
-    "/databases/(default)/documents/" +
-    path
-  );
-}
-
 export async function updateAdminBooking(
   session: AdminSession,
   booking: AdminBooking,
   patch: BookingAdminPatch,
 ): Promise<void> {
-  const projectId = getProjectId();
+  const { projectId, apiKey } = await getFirebasePublicConfig();
   const now = new Date().toISOString();
   const fields: Record<string, FirestoreValue> = {
     updatedAt: timestampValue(now),
@@ -239,7 +224,7 @@ export async function updateAdminBooking(
     "https://firestore.googleapis.com/v1/projects/" +
     encodeURIComponent(projectId) +
     "/databases/(default)/documents:commit?key=" +
-    encodeURIComponent(getApiKey());
+    encodeURIComponent(apiKey);
 
   const response = await fetch(endpoint, {
     method: "POST",
@@ -253,7 +238,6 @@ export async function updateAdminBooking(
   if (!response.ok) throw new Error(await readError(response));
 }
 
-
 export async function seedConfirmedAvailability(
   session: AdminSession,
   bookings: AdminBooking[],
@@ -266,7 +250,7 @@ export async function seedConfirmedAvailability(
   );
   if (confirmed.length === 0) return;
 
-  const projectId = getProjectId();
+  const { projectId, apiKey } = await getFirebasePublicConfig();
   const now = new Date().toISOString();
   const writes = confirmed.map((booking) => {
     const date = booking.confirmedDate || booking.appointmentDate;
@@ -294,7 +278,7 @@ export async function seedConfirmedAvailability(
     "https://firestore.googleapis.com/v1/projects/" +
     encodeURIComponent(projectId) +
     "/databases/(default)/documents:commit?key=" +
-    encodeURIComponent(getApiKey());
+    encodeURIComponent(apiKey);
 
   const response = await fetch(endpoint, {
     method: "POST",
